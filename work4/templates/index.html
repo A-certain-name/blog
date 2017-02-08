@@ -1,0 +1,26 @@
+{% extends "layout.html" %}
+{% block content %}
+  <!-- Form
+  ================================================== -->
+<div class="form">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-12">
+        <p class="lead">
+          {% if tweet %}
+            今の気分は {{ tweet }} 
+		さあコミットが足りないもっと呟こう
+          {% else %}
+            {{ message }}
+          {% endif %}
+        </p>
+        <form action="/post" method="post" class="form-inline">
+          <label for="tweet">一言</label>
+          <input type="text" class="form-control" id="tweet" name="tweet" placeholder="tweet">
+          <button type="submit" class="btn btn-default">つぶやく</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
