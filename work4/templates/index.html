@@ -19,6 +19,11 @@
           <input type="text" class="form-control" id="tweet" name="tweet" placeholder="tweet">
           <button type="submit" class="btn btn-default">つぶやく</button>
         </form>
+  	<ul class="entries">
+  	{% for entry in entries %}
+           <li><h2>{{ entry.title }}</h2>{{ entry.text|safe }}
+	{% endfor %}
+  	</ul>
       </div>
     </div>
   </div>
