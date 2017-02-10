@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import sqlite3
-from flask import Flask, render_template, request, session, g, redirect, url_for,abort,flash
+from flask import Flask, render_template, request, redirect, url_for
 # import numpy as np
 # from __future__ import with_statement
 from contextlib import closing
@@ -61,6 +61,27 @@ def post():
                                tweet=tweet, title=title)
     else:
         return redirect(url_for('index'))
+
+#ログイン機能
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    error = None
+    if request.method == 'POST':
+        if request.form['username'] != app.config['USERNAME']:
+            error = u'ユーザ名が間違っています'
+        elif request.form['password'] != app.config['PASSWORD']:
+            error = u'パスワードが間違っています'
+        else:
+            session['logged_in'] = True
+            flash(u'ログインしました')
+            return redirect(url_for('index'))
+    return render_template('login.html', error=error)
+
+@app.route('/logout')
+def logout():
+    session.pop('logged_in', None)
+    flash(u'ログアウトしました')
+    return redirect(url_for('index'))
 
 if __name__ == '__main__':
     app.debug = True
