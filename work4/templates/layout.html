@@ -20,6 +20,16 @@
     <![endif]-->
   </head>
   <body>
+    <div class="metanav">
+    {% if not session.logged_in %}
+      <a href="{{ url_for('login') }}">ログイン</a>
+    {% else %}
+      <a href="{{ url_for('logout') }}">ログアウト</a>
+    {% endif %}
+      </div>
+    {% for message in get_flashed_messages() %}
+      <div class="flash">{{ message }}</div>
+    {% endfor %}
     {% block content %}{% endblock %}
     <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
     <script src="/static/js/jquery.min.js"></script>
