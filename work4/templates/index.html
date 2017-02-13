@@ -1,31 +1,21 @@
 {% extends "layout.html" %}
-{% block content %}
-  <!-- Form
-  ================================================== -->
-<div class="form">
-  <div class="container">
-    <div class="row">
-      <div class="col-md-12">
-        <p class="lead">
-          {% if tweet %}
-            今の気分は {{ tweet }} 
-		さあコミットが足りないもっと呟こう
-          {% else %}
-            {{ message }}
-          {% endif %}
-        </p>
-        <form action="/post" method="post" class="form-inline">
-          <label for="tweet">一言</label>
-          <input type="text" class="form-control" id="tweet" name="tweet" placeholder="tweet">
-          <button type="submit" class="btn btn-default">つぶやく</button>
-        </form>
-  	<ul class="entries">
-  	{% for entry in entries %}
-           <li><h2>{{ entry.title }}</h2>{{ entry.text|safe }}
-	{% endfor %}
-  	</ul>
-      </div>
-    </div>
-  </div>
-</div>
+{% block body %}
+  {% if session.logged_in %}
+    <form action="{{ url_for('post') }}" method="post" class="post">
+      <dl>
+        <dt>タイトル:
+        <dd><input type="text" size=30 name="title">
+        <dt>本文:
+        <dd><textarea name="text" rows=5 cols=40></textarea>
+        <dd><input type="submit" value="投稿する">
+      </dl>
+    </form>
+  {% endif %}
+  <ul class="entries">
+  {% for entry in entries %}
+    <li><h2>{{ entry.title }}</h2>{{ entry.text|safe }}
+  {% else %}
+    <li><em>投稿されている記事がありません</em>
+  {% endfor %}
+  </ul>
 {% endblock %}

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import sqlite3
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request, session, g, redirect, url_for,abort,flash
 # import numpy as np
 # from __future__ import with_statement
 from contextlib import closing
@@ -52,15 +52,15 @@ def index():
                            message=message, title=title, entries=entries)
 
 # 記事投稿
-@app.route('/post', methods=['POST', 'GET'])
+@app.route('/post', methods=['POST'])
 def post():
-    title = '投稿ページ'
-    if request.method == 'POST':
-        tweet = request.form['tweet']
-        return render_template('index.html',
-                               tweet=tweet, title=title)
-    else:
-        return redirect(url_for('index'))
+    if not session.get('logged_in'):
+        abort(401)
+    g.db.execute('insert into entries (title, text) values (?, ?)',
+                 [request.form['title'], request.form['text']])
+    g.db.commit()
+    flash(u'新しいつぶやきが追加されました')
+    return redirect(url_for('index'))
 
 #ログイン機能
 @app.route('/login', methods=['GET', 'POST'])
