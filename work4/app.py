@@ -2,8 +2,6 @@
 
 import sqlite3
 from flask import Flask, render_template, request, session, g, redirect, url_for,abort,flash
-# import numpy as np
-# from __future__ import with_statement
 from contextlib import closing
 
 DATABASE = 'flaskr.db'
@@ -46,10 +44,7 @@ def index():
     # 降順でテキストを取り出す
     cur = g.db.execute('select title, text from entries order by id desc')
     entries = [dict(title=row[0], text=row[1]) for row in cur.fetchall()]
-    title = "blogサイト"
-    message = "今の気分を一言"
-    return render_template('index.html',
-                           message=message, title=title, entries=entries)
+    return render_template('index.html',entries=entries)
 
 # 記事投稿
 @app.route('/post', methods=['POST'])
@@ -59,7 +54,18 @@ def post():
     g.db.execute('insert into entries (title, text) values (?, ?)',
                  [request.form['title'], request.form['text']])
     g.db.commit()
-    flash(u'新しいつぶやきが追加されました')
+    flash(u'新しい記事が追加されました')
+    return redirect(url_for('index'))
+
+# 記事削除
+@app.route('/delete', methods=['DELETE'])
+def delete():
+    if not session.get('logged_in'):
+        abort(401)
+    g.db.execute('delete from entries where text = ?',
+                 [request.form['title']])
+    g.db.commit()
+    flash(u'記事をが削除しました')
     return redirect(url_for('index'))
 
 #ログイン機能
