@@ -58,11 +58,11 @@ def post():
     return redirect(url_for('index'))
 
 # 記事削除
-@app.route('/delete', methods=['DELETE'])
+@app.route('/delete', methods=['POST'])
 def delete():
     if not session.get('logged_in'):
         abort(401)
-    g.db.execute('delete from entries where text = ?',
+    g.db.execute('delete from entries where title = ?',
                  [request.form['title']])
     g.db.commit()
     flash(u'記事をが削除しました')
