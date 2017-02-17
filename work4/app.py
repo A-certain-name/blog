@@ -68,6 +68,17 @@ def delete():
     flash(u'記事をが削除しました')
     return redirect(url_for('index'))
 
+#記事更新
+@app.route('/put', methods=['POST'])
+def put():
+    if not session.get('logged_in'):
+        abort(401)
+    g.db.execute('update entries  set text = ? where title = ?',
+                 [request.form['text'], request.form['title']])
+    g.db.commit()
+    flash(u'新しい記事が更新されました')
+    return redirect(url_for('index'))
+
 #ログイン機能
 @app.route('/login', methods=['GET', 'POST'])
 def login():
