@@ -79,6 +79,26 @@ def put():
     flash(u'新しい記事が更新されました')
     return redirect(url_for('index'))
 
+# コメント投稿
+@app.route('/post_comment', methods=['POST'])
+def post_comment():
+    g.db.execute('insert into comment (name, text) values (?, ?)',
+                 [request.form['name'], request.form['text']])
+    g.db.commit()
+    flash(u'新しいコメントが追加されました')
+    return redirect(url_for('index'))
+
+# 記事削除
+@app.route('/delete_comment', methods=['POST'])
+def delete_comment():
+    if not session.get('logged_in'):
+        abort(401)
+    g.db.execute('delete from comment where neme = ?',
+                 [request.form['name']])
+    g.db.commit()
+    flash(u'記事をが削除しました')
+    return redirect(url_for('index'))
+
 #ログイン機能
 @app.route('/login', methods=['GET', 'POST'])
 def login():
