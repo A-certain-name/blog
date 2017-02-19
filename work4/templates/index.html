@@ -35,6 +35,7 @@
         <dd><input type="submit" value="更新">
       </dl>
     </form>
+   <hr>
   {% endif %}
    <ul class="entries">
   {% for entry in entries %}
@@ -43,6 +44,7 @@
     <li><em>投稿されている記事がありません</em>
   {% endfor %}
    <hr>
+　　<li><em>コメント欄:</em>
   {% for comment in comment %}
     <li><h2>{{ comment.id }}:{{ comment.name }}</h2>{{ comment.text|safe }}
   {% else %}
