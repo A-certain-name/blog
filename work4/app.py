@@ -42,9 +42,12 @@ def teardown_request(exception):
 @app.route('/')
 def index():
     # 降順でテキストを取り出す
-    cur = g.db.execute('select title, text from entries order by id desc')
-    entries = [dict(title=row[0], text=row[1]) for row in cur.fetchall()]
-    return render_template('index.html',entries=entries)
+    cur = g.db.execute('select id, title, text from entries order by id desc')
+    entries = [dict(id=row[0], title=row[1], text=row[2]) for row in cur.fetchall()]
+
+    cur = g.db.execute('select id, name, text from comment order by id desc')
+    comment = [dict(id=row[0], name=row[1], text=row[2]) for row in cur.fetchall()]
+    return render_template('index.html',entries=entries, comment=comment)
 
 # 記事投稿
 @app.route('/post', methods=['POST'])
@@ -62,8 +65,8 @@ def post():
 def delete():
     if not session.get('logged_in'):
         abort(401)
-    g.db.execute('delete from entries where title = ?',
-                 [request.form['title']])
+    g.db.execute('delete from entries where id = ?',
+                 [request.form['id']])
     g.db.commit()
     flash(u'記事をが削除しました')
     return redirect(url_for('index'))
@@ -73,10 +76,10 @@ def delete():
 def put():
     if not session.get('logged_in'):
         abort(401)
-    g.db.execute('update entries  set text = ? where title = ?',
-                 [request.form['text'], request.form['title']])
+    g.db.execute('update entries  set title = ?, text = ? where id = ?',
+                 [request.form['title'], request.form['text'], request.form['id']])
     g.db.commit()
-    flash(u'新しい記事が更新されました')
+    flash(u'記事が更新されました')
     return redirect(url_for('index'))
 
 # コメント投稿
@@ -88,15 +91,13 @@ def post_comment():
     flash(u'新しいコメントが追加されました')
     return redirect(url_for('index'))
 
-# 記事削除
+# コメント削除
 @app.route('/delete_comment', methods=['POST'])
 def delete_comment():
-    if not session.get('logged_in'):
-        abort(401)
-    g.db.execute('delete from comment where neme = ?',
-                 [request.form['name']])
+    g.db.execute('delete from comment where id = ?',
+                 [request.form['id']])
     g.db.commit()
-    flash(u'記事をが削除しました')
+    flash(u'コメントを削除しました')
     return redirect(url_for('index'))
 
 #ログイン機能

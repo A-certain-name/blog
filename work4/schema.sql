@@ -4,3 +4,9 @@ create table entries (
   title string not null,
   text string not null
 );
+drop table if exists comment;
+create table comment (
+  id integer primary key autoincrement,
+  name string not null,
+  text string not null
+);

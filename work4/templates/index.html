@@ -14,8 +14,8 @@
     <form action="{{ url_for('delete') }}" method="post" class="delete">
       <dl>
         <dt>記事を削除
-        <dt>タイトル:
-        <dd><input type="text" size=30 name="title">
+        <dt>投稿ID:
+        <dd><input type="text" size=30 name="id">
 	<dd><input type="hidden" name="_method" value="DELETE">
         <dd><input type="submit" value="削除">
       </dl>
@@ -23,6 +23,9 @@
     <form action="{{ url_for('put') }}" method="post" class="put">
       <dl>
         <dt>記事を更新
+        <dt>投稿ID:
+        <dd><input type="text" size=30 name="id">
+        <dd><input type="hidden" name="_method" value="PUT">
         <dt>タイトル:
         <dd><input type="text" size=30 name="title">
         <dd><input type="hidden" name="_method" value="PUT">
@@ -35,19 +38,34 @@
   {% endif %}
    <ul class="entries">
   {% for entry in entries %}
-    <li><h2>{{ entry.title }}</h2>{{ entry.text|safe }}
+    <li><h2>{{ entry.title }}(投稿ID:{{ entry.id }})</h2>{{ entry.text|safe }}
   {% else %}
     <li><em>投稿されている記事がありません</em>
   {% endfor %}
-   <form action="{{ url_for('post_comment') }}" method="post_comment" class="post_comment">
+   <hr>
+  {% for comment in comment %}
+    <li><h2>{{ comment.id }}:{{ comment.name }}</h2>{{ comment.text|safe }}
+  {% else %}
+    <li><em>投稿されているコメントがありません</em>
+  {% endfor %}
+   <form action="{{ url_for('post_comment') }}" method="post" class="post_comment">
     <dl>
-      <dt>コメントを投稿
+      <dt>コメントを書く
       <dt>名前:
-      <dd><input type="name" size=30 name="title">
+      <dd><input type="text" size=30 name="name">
       <dt>本文:
       <dd><textarea name="text" rows=5 cols=40></textarea>
-      <dd><input type="submit" value="投稿する">
+      <dd><input type="submit" value="コメントする">
     </dl>
    </form>
+    <form action="{{ url_for('delete_comment') }}" method="post" class="delete_comment">
+      <dl>
+        <dt>コメントを削除
+        <dt>レス番号:
+        <dd><input type="text" size=30 name="id">
+        <dd><input type="hidden" name="_method" value="DELETE">
+        <dd><input type="submit" value="削除">
+      </dl>
+    </form>
   </ul>
 {% endblock %}
